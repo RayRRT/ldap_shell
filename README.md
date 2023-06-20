@@ -1,3 +1,5 @@
+Wanted to add more funcionalities, atm just added profilePath and set spn abuse (TODO clean my dirty code).
+
 # LDAP shell
 This project is a fork of ldap_shell (https://github.com/SecureAuthCorp/impacket/blob/master/impacket/examples/ldap_shell.py).
 
@@ -61,6 +63,9 @@ exit - Terminates this session.
 - [x] get_all_laps - Get all LAPS passwords
 - [x] set_owner - Abuse WriteOwner privilege
 - [x] dacl_modify - Set GenericAll, WriteDacl, WriteProperties or set MASK of privilege
+- [x] set_profilePath - Set profilePath user attribute, usefull to relay
+- [x] unset_profilePath - clean relay
+- [x] set_kerberoast - set SPN to targeted Kerberoasting 
 
 ## License
 Apache
@@ -72,6 +77,3 @@ Apache
 * [Impacket](https://github.com/SecureAuthCorp/impacket)
 * [saber-nyan](https://saber-nyan.com)
 
-## Donate
-If you want to support the project or have unnecessary money :)
-ETH: 0xAA89044f8BE2F712Cc987Be00F55296B3045c9c3
