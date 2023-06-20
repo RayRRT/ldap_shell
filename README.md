@@ -1,4 +1,4 @@
-Wanted to add more funcionalities, atm just added profilePath and set spn abuse (TODO clean my dirty code).
+Wanted to add more funcionalities, atm just added profilePath and set spn abuse (TODO clean my dirty code, be careful).
 
 # LDAP shell
 This project is a fork of ldap_shell (https://github.com/SecureAuthCorp/impacket/blob/master/impacket/examples/ldap_shell.py).
