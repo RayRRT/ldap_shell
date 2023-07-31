@@ -22,6 +22,12 @@ ldap_shell domain.local/user -hashes aad3b435b51404eeaad3b435b51404ee:aad3b435b5
 export KRB5CCNAME=/home/user/ticket.ccache
 ldap_shell -k -no-pass domain.local/user
 ```
+
+### Enumeration
+* Remember that you can dump information about the domain (dump command) in .json or .html format, usefull:
+
+![ldap_shell dump](https://github.com/LaresLLC/LDAP-Pwn-Them-All---Tools/blob/main/Impacket_ldap_shell_v2/ldap_output.png)
+
 ### Functionality
 ```
 Get Info
@@ -56,7 +62,6 @@ exit - Terminates this session.
 ```
 ## TODO
 - [x] del_computer - Delete computer
-- [ ] del_user - Delete user
 - [x] set_dcsync - If you have write access to the domain object, assign the DS-Replication right to the selected user
 - [x] del_dcsync - Delete DS-Replication right to the selected user
 - [x] shadow_credantional - inherited [pywhisker](https://github.com/ShutdownRepo/pywhisker)
@@ -65,7 +70,12 @@ exit - Terminates this session.
 - [x] dacl_modify - Set GenericAll, WriteDacl, WriteProperties or set MASK of privilege
 - [x] set_profilePath - Set profilePath user attribute, usefull to relay
 - [x] unset_profilePath - clean relay
-- [x] set_kerberoast - set SPN to targeted Kerberoasting 
+- [x] set_kerberoast - set SPN to targeted Kerberoasting
+- [ ] Improve the output
+- [ ] get_gpos - Enumerate GPOs
+- [ ] get_passpolicy - Enumerate password policy
+- [ ] del_user - Delete user
+- [ ] Just more functionalities
 
 ## License
 Apache
